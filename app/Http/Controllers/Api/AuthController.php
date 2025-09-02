@@ -9,6 +9,16 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    public function login(Request $request)
+    {
+        $user = User::where('email', $request->email)->first();
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return response()->json(['status' => 400,'message' => "Invalid credentials."]);
+        }
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json(['status' => 200,'message' => 'Login successful','user' => $user,'token' => $token]);
+    }
+
     public function register(Request $request)
     {
         $count = User::where("email",$request->email)->count();
@@ -35,16 +45,6 @@ class AuthController extends Controller
         } else {
             return response()->json(['status' => 400,'message' => "Email already exist."]);
         }
-    }
-
-    public function login(Request $request)
-    {
-        $user = User::where('email', $request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['status' => 400,'message' => "Invalid Credentials."]);
-        }
-        $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['status' => 200,'message' => 'Login successful','user' => $user,'token' => $token]);
     }
 
     public function logout(Request $request)

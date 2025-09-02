@@ -18,4 +18,9 @@ class Appointment extends Model
         'note',
         'status'
     ];
+
+    public function professional()
+    {
+        return $this->belongsTo(Professional::class, 'professional_id', 'id');
+    }
 }

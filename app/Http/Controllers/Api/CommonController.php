@@ -37,19 +37,25 @@ class CommonController extends Controller
         $post = $request->all();
 
         $model = new Appointment;
-        $count = $model->where(["professional_id" => $post["professional_id"],"date" => $post["date"],"stime" => $post["stime"].":00","etime" => $post["etime"].":00"])->whereNotIn("status", ["completed", "cancelled"])->count();
+        $count = $model->where(["user_id" => $post["user_id"],"professional_id" => $post["professional_id"],"date" => $post["date"],"stime" => $post["stime"].":00","etime" => $post["etime"].":00"])->where("status", "confirmed")->count();
         if($count == 0) {
-            $model = new Appointment;
-            $model->user_id = $post["user_id"];
-            $model->professional_id = $post["professional_id"];
-            $model->date = $post["date"];
-            $model->stime = $post["stime"].":00";
-            $model->etime = $post["etime"].":00";
-            $model->note = $post["note"];
-            $model->created_at = date("Y-m-d H:i:s");
-            $model->save();
+            $count = $model->where(["user_id" => $post["user_id"],"date" => $post["date"],"stime" => $post["stime"].":00","etime" => $post["etime"].":00"])->where("status", "confirmed")->count();
+            if($count == 0) {
+                $model = new Appointment;
+                $model->user_id = $post["user_id"];
+                $model->professional_id = $post["professional_id"];
+                $model->date = $post["date"];
+                $model->stime = $post["stime"].":00";
+                $model->etime = $post["etime"].":00";
+                $model->note = $post["note"];
+                $model->status = "confirmed";
+                $model->created_at = date("Y-m-d H:i:s");
+                $model->save();
 
-            return response()->json(['status' => 200,'message' => "Appointment booked successfully."]);
+                return response()->json(['status' => 200,'message' => "Appointment booked successfully."]);
+            } else {
+                return response()->json(['status' => 400,'message' => "You already booked appointment with same date & slot with other professional."]);
+            }
         } else {
             return response()->json(['status' => 400,'message' => "Selected slot already booked"]);
         }
@@ -57,7 +63,10 @@ class CommonController extends Controller
 
     public function my_appointment(Request $request)
     {
-        $appointments = Appointment::where("user_id",$request->user_id)->get();
+        $appointments = Appointment::with(['professional' => function ($query) {
+            $query->select('id', 'name'); 
+            }
+        ])->where("user_id",$request->user_id)->get();
         return response()->json(['status' => 200,'appointments' => $appointments]);
     }
 

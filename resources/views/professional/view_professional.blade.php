@@ -69,7 +69,7 @@
                 <input type="hidden" name="professional_id" id="professional_id" />
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalCenterTitle">Book Appointment</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close_raise_payment_request_modal"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="close_book_appointment_modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">

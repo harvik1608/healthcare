@@ -16,7 +16,7 @@ class ProfessionalController extends Controller
         $response = Http::get('http://localhost/healthcare/public/api/fetch-specialities');
         $_specialities = [];
         $res = $response->json();
-        if($res["status"] && $res["status"] == 200) {
+        if(isset($res["status"]) && $res["status"] == 200) {
             $_specialities = $res["specialities"];
         }        
         return view('professional/professionals', compact('_specialities'));

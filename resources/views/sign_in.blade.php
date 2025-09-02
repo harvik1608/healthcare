@@ -12,11 +12,12 @@
 	    <link rel="stylesheet" href="{{ asset('css/demo.css') }}" />
 	    <link rel="stylesheet" href="{{ asset('vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 	    <link rel="stylesheet" href="{{ asset('vendor/css/pages/page-auth.css') }}">
+	    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
 	    <link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 		<style>
-			body {
+			body, .jq-toast-single {
 				font-family: "Nunito", serif !important;
 				font-optical-sizing: auto;
 				font-weight: 400;
@@ -24,6 +25,9 @@
 			}
 			p.mb-6, .justify-content-between {
 				text-align: center;
+			}
+			#password-error {
+				display: none;
 			}
 		</style>
 	    <script src="{{ asset('vendor/js/helpers.js') }}"></script>
@@ -35,8 +39,8 @@
 				<div class="authentication-inner">
 					<div class="card px-sm-6 px-0">
 						<div class="card-body">
-							@if (session('error'))
-							    <div class="alert alert-danger">
+							@if(session('error'))
+							    <div class="alert alert-danger" id="error" hidden>
 							        {{ session('error') }}
 							    </div>
 							@endif
@@ -93,6 +97,7 @@
 										<input type="password" id="password" class="form-control" name="password" placeholder="Enter your password" aria-describedby="password" required />
 										<span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
 									</div>
+									<label id="password-error" class="error" for="password"></label>
 								</div>
 								<div class="mb-6">
 									<button class="btn btn-primary d-grid w-100" type="submit">Sign In</button>
@@ -115,8 +120,12 @@
 		<script src="{{ asset('/js/main.js') }}"></script>
 		<script async defer src="{{ asset('buttons.js') }}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+		<script src="{{ asset('js/toast.js') }}"></script>
 		<script>
-			$(document).ready(function () {
+			$(document).ready(function() {
+				if($("#error").length) {
+					show_toast($("#error").text());
+				}
 				$("#signin-form").validate({
 					rules:{
 						email:{
@@ -136,6 +145,15 @@
 					}
 				});
 			});
+			function show_toast(msg,second = 3000)
+		    {
+		    	$.toast({
+				    text: msg,
+				    showHideTransition: 'fade',
+				    position: 'bottom-center',
+				    hideAfter: second
+				})
+		    }
 		</script>
 	</body>
 </html>

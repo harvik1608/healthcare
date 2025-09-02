@@ -12,11 +12,12 @@
 	    <link rel="stylesheet" href="{{ asset('css/demo.css') }}" />
 	    <link rel="stylesheet" href="{{ asset('vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
 	    <link rel="stylesheet" href="{{ asset('vendor/css/pages/page-auth.css') }}">
+	    <link rel="stylesheet" href="{{ asset('css/toast.css') }}">
 	    <link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
 		<style>
-			body {
+			body, .jq-toast-single {
 				font-family: "Nunito", serif !important;
 				font-optical-sizing: auto;
 				font-weight: 400;
@@ -158,6 +159,7 @@
 		<script src="{{ asset('/js/main.js') }}"></script>
 		<script async defer src="{{ asset('buttons.js') }}"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+		<script src="{{ asset('js/toast.js') }}"></script>
 		<script>
 			$(document).ready(function(){
 				$("#main-menu li").each(function(){
@@ -177,6 +179,9 @@
 						}
 					}
 				});
+				$("#close_book_appointment_modal").click(function(){
+					$("#date,#note").val("");
+				});
 				$("#bookAppointmentForm").submit(function(e){
 					e.preventDefault();
 
@@ -195,7 +200,7 @@
 								if(response.status == 200) {
 									window.location.href = "{{ route('user.appointments') }}";
 								} else {
-									alert(response.message);
+									show_toast(response.message);
 									$("#bookAppointmentForm button[type=submit]").html('Book').attr("disabled",false);
 								}
 							},
@@ -212,6 +217,15 @@
 		    	$("#stime").val(stime);
 		    	$("#etime").val(etime);
 		        $("#book_appointment_modal").modal("show");
+		    }
+		    function show_toast(msg,second = 3000)
+		    {
+		    	$.toast({
+				    text: msg,
+				    showHideTransition: 'fade',
+				    position: 'bottom-center',
+				    hideAfter: second
+				})
 		    }
 		</script>
 	</body>
