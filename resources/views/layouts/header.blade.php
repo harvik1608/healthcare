@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    	<title>HealthCare</title>
+    	<title>{{ APP_NAME }}</title>
 
     	<link rel="icon" type="image/x-icon" href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template-free/assets/img/favicon/favicon.ico" />
     	<link rel="stylesheet" href="{{ asset('vendor/fonts/boxicons.css') }}" />
@@ -32,6 +32,11 @@
 	    <script src="{{ asset('js/config.js') }}"></script>
 	</head>
 	<body>
+		@if(session('error'))
+			<div class="alert alert-danger" id="flash" hidden>
+				{{ session('error') }}
+			</div>
+		@endif
 		<div class="layout-wrapper layout-content-navbar">
 			<div class="layout-container">
 				<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
@@ -71,7 +76,7 @@
 									</g>
 								</svg>
 							</span>
-							<span class="app-brand-text demo menu-text fw-bold ms-2">HealthCare</span>
+							<span class="app-brand-text demo menu-text fw-bold ms-2">{{ APP_NAME }}</span>
 						</a>
 						<a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
 							<i class="bx bx-chevron-left bx-sm d-flex align-items-center justify-content-center"></i>
@@ -162,6 +167,9 @@
 		<script src="{{ asset('js/toast.js') }}"></script>
 		<script>
 			$(document).ready(function(){
+				if($("#flash").length) {
+					show_toast($("#flash").text());
+				}
 				$("#main-menu li").each(function(){
 					if($.trim($(this).text()) == page_title) {
 						$(this).addClass("active");

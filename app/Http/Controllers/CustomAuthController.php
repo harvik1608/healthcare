@@ -17,7 +17,7 @@ class CustomAuthController extends Controller
     public function submit_signin(Request $request)
     {
         $post = $request->all();
-        $response = Http::post('http://localhost/healthcare/public/api/login', [
+        $response = Http::post(API_URL.'/login', [
             'email' => $post['email'],
             'password' => $post['password'],
         ]);
@@ -28,7 +28,7 @@ class CustomAuthController extends Controller
             return redirect("dashboard");
         } else {
             session()->flash('error', $res['message']);
-            return redirect("sign-in");
+            return redirect("sign-in")->withInput();
         }
     }
 
@@ -41,7 +41,7 @@ class CustomAuthController extends Controller
     {
         try {
             $post = $request->all();
-            $response = Http::post('http://localhost/healthcare/public/api/register', [
+            $response = Http::post(API_URL.'/register', [
                 'name' => $post['name'],
                 'phone' => $post['phone'],
                 'email' => $post['email'],
@@ -54,16 +54,16 @@ class CustomAuthController extends Controller
                 return redirect("dashboard");
             } else {
                 session()->flash('error', $res['message']);
-                return redirect("sign-up");
+                return redirect("sign-up")->withInput();
             }
         } catch(Exception $e) {
-            return response()->json(["status" => "error","message" => $e->getMessage()]);
+            return redirect("sign-up")->withInput();
         }
     }
 
     public function logout()
     {
-        $response = Http::get('http://localhost/healthcare/public/api/logout');
+        $response = Http::get(API_URL.'/logout');
         return redirect("sign-in");  
     }
 }

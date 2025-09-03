@@ -23,6 +23,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if(!defined('APP_NAME')) {
+            define('APP_NAME','HealthCare');
+        }
+
+        if(!defined('API_URL')) {
+            define('API_URL','http://localhost/healthcare/public/api');
+        }
     }
 }

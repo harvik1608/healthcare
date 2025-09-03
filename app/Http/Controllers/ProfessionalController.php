@@ -13,7 +13,7 @@ class ProfessionalController extends Controller
 {
     public function index()
     {
-        $response = Http::get('http://localhost/healthcare/public/api/fetch-specialities');
+        $response = Http::get(API_URL.'/fetch-specialities');
         $_specialities = [];
         $res = $response->json();
         if(isset($res["status"]) && $res["status"] == 200) {
@@ -26,7 +26,7 @@ class ProfessionalController extends Controller
     {
         try {
             $post = $request->all();
-            $response = Http::post('http://localhost/healthcare/public/api/fetch-professionals', [
+            $response = Http::post(API_URL.'/fetch-professionals', [
                 'speciality_id' => $post["speciality_id"]
             ]);
             $professionals = [];
@@ -43,7 +43,7 @@ class ProfessionalController extends Controller
 
     public function show($professional_id)
     {
-        $response = Http::post('http://localhost/healthcare/public/api/view-professional', [
+        $response = Http::post(API_URL.'/view-professional', [
             'professional_id' => $professional_id
         ]);
         $professional = [];
@@ -75,7 +75,7 @@ class ProfessionalController extends Controller
             $user = Auth::guard('sanctum')->user();
             $post = $request->all();
 
-            $response = Http::post('http://localhost/healthcare/public/api/book-appointment', [
+            $response = Http::post(API_URL.'/book-appointment', [
                 'user_id' => $user["id"],
                 "professional_id" => $post["professional_id"],
                 "date" => $post["date"],
@@ -97,7 +97,7 @@ class ProfessionalController extends Controller
     public function my_appointments()
     {
         $user = Auth::guard('sanctum')->user();
-        $response = Http::post('http://localhost/healthcare/public/api/my-appointments',["user_id" => $user["id"]]);
+        $response = Http::post(API_URL.'/my-appointments',["user_id" => $user["id"]]);
         $appointments = [];
         $res = $response->json();
         if($res["status"] && $res["status"] == 200) {
@@ -108,19 +108,23 @@ class ProfessionalController extends Controller
 
     public function cancel($appointment_id)
     {
-        $response = Http::post('http://localhost/healthcare/public/api/update-appointment-status', [
+        $response = Http::post(API_URL.'/update-appointment-status', [
             'appointment_id' => $appointment_id,
             'status' => "cancelled"
         ]);
+        $res = $response->json();
+        session()->flash('error', $res['message']);
         return redirect("appointments");
     }
 
     public function complete($appointment_id)
     {
-        $response = Http::post('http://localhost/healthcare/public/api/update-appointment-status', [
+        $response = Http::post(API_URL.'/update-appointment-status', [
             'appointment_id' => $appointment_id,
             'status' => "completed"
         ]);
+        $res = $response->json();
+        session()->flash('error', $res['message']);
         return redirect("appointments");
     }
 }

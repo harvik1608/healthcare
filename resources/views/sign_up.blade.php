@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
     	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    	<title>HealthCare</title>
+    	<title>{{ APP_NAME }}</title>
 
     	<link rel="icon" type="image/x-icon" href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template-free/assets/img/favicon/favicon.ico" />
     	<link rel="stylesheet" href="{{ asset('vendor/fonts/boxicons.css') }}" />
@@ -80,7 +80,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="app-brand-text demo text-heading fw-bold">HealthCare</span>
+									<span class="app-brand-text demo text-heading fw-bold">{{ APP_NAME }}</span>
 								</a>
 							</div>
 							<!-- <h4 class="mb-1">Sign In! 👋</h4> -->
@@ -89,15 +89,15 @@
 								<input type="hidden" name="_token" value="{{ csrf_token() }}" />
 								<div class="mb-6">
 									<label for="email" class="form-label">Name</label>
-									<input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" autofocus />
+									<input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" value="{{ old('name') }}" autofocus />
 								</div>
 								<div class="mb-6">
 									<label for="email" class="form-label">Mobile No.</label>
-									<input type="number" class="form-control" id="phone" name="phone" placeholder="Enter your mobile no." />
+									<input type="number" class="form-control" id="phone" name="phone" placeholder="Enter your mobile no." value="{{ old('phone') }}" />
 								</div>
 								<div class="mb-6">
 									<label for="email" class="form-label">Email</label>
-									<input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+									<input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ old('email') }}" />
 								</div>
 								<div class="mb-6 form-password-toggle">
 									<label class="form-label" for="password">Password</label>

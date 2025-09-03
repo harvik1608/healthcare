@@ -16,7 +16,7 @@ use App\Http\Controllers\ProfessionalController;
 |
 */
 Route::get('/', function () {
-    return view('welcome');
+    return view('sign_in');
 });
 Route::get('/sign-in', [CustomAuthController::class, 'index'])->name("user.sign-in");
 Route::post('/submit-signin', [CustomAuthController::class, 'submit_signin'])->name("submit-signin");

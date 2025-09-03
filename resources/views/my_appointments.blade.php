@@ -14,11 +14,11 @@
                     <thead>
                         <tr>
                             <th width="5%">#</th>
-                            <th width="45%">Professional Name</th>
-                            <th width="10%">Date</th>
+                            <th width="35%">Professional Name</th>
+                            <th width="15%">Date</th>
                             <th width="15%">Slot</th>
                             <th width="10%">Status</th>
-                            <th width="15%">Action</th>
+                            <th width="20%">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -27,7 +27,7 @@
                                 <tr>
                                     <td>{{ $key+1 }}</td>
                                     <td>{{ isset($val["professional"]["name"]) ? $val["professional"]["name"] : '' }}</td>
-                                    <td>{{ date('d M, Y',strtotime($val['date'])) }}</td>
+                                    <td><small>{{ date('d M, Y',strtotime($val['date'])) }}</small></td>
                                     <td><small>{{ date('h:i A',strtotime($val['stime'])) }} To {{ date('h:i A',strtotime($val['etime'])) }}</small></td>
                                     <td valign="middle" align="center">
                                         @switch($val['status'])
@@ -47,11 +47,14 @@
                                                 <p class="badge bg-danger mt-4">CANCELLED</p>
                                         @endswitch
                                     </td>
-                                    <td>
-                                        @if($val['status'] == 'pending')
-                                            <a class="btn btn-sm btn-danger text-white" href="{{ route('user.cancel_appointment', ['id' => $val['id']]) }}" onclick="return confirm('Are you sure to cancel this appointment?')">Cancel</a>
-                                        @elseif(in_array($val["status"],["pending","confirmed","cancelled"]))
-                                            <a class="btn btn-sm btn-danger text-white" href="{{ route('user.complete_appointment', ['id' => $val['id']]) }}" onclick="return confirm('Are you sure?')">Mark as Completed</a>
+                                    <td align="center" valign="middle">
+                                        @if($val['status'] == 'confirmed')
+                                            @if(strtotime(date("Y-m-d H:i:s")) > strtotime(date("Y-m-d H:i:s",strtotime($val["date"]." ".$val["etime"]))))
+                                                <a class="btn btn-sm btn-primary text-white" href="{{ route('user.complete_appointment', ['id' => $val['id']]) }}" onclick="return confirm('Are you sure to complete this appointment?')">Complete</a>
+                                            @endif
+                                            @if(strtotime(date("Y-m-d H:i:s")) < strtotime(date("Y-m-d H:i:s",strtotime($val["date"]." ".$val["stime"]))))
+                                                <a class="btn btn-sm btn-danger text-white" href="{{ route('user.cancel_appointment', ['id' => $val['id']]) }}" onclick="return confirm('Are you sure to cancel this appointment?')">Cancel</a>
+                                            @endif
                                         @else 
                                             {{ "-" }}
                                         @endif

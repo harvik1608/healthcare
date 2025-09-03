@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Professional;
 use App\Models\Speciality;
 use App\Models\Appointment;
+use Carbon\Carbon;
 
 class CommonController extends Controller
 {
@@ -41,18 +42,22 @@ class CommonController extends Controller
         if($count == 0) {
             $count = $model->where(["user_id" => $post["user_id"],"date" => $post["date"],"stime" => $post["stime"].":00","etime" => $post["etime"].":00"])->where("status", "confirmed")->count();
             if($count == 0) {
-                $model = new Appointment;
-                $model->user_id = $post["user_id"];
-                $model->professional_id = $post["professional_id"];
-                $model->date = $post["date"];
-                $model->stime = $post["stime"].":00";
-                $model->etime = $post["etime"].":00";
-                $model->note = $post["note"];
-                $model->status = "confirmed";
-                $model->created_at = date("Y-m-d H:i:s");
-                $model->save();
+                if(strtotime(date("Y-m-d H:i:s",strtotime($post["date"]." ".$post["stime"]))) > strtotime(date("Y-m-d H:i:s"))) {
+                    $model = new Appointment;
+                    $model->user_id = $post["user_id"];
+                    $model->professional_id = $post["professional_id"];
+                    $model->date = $post["date"];
+                    $model->stime = $post["stime"].":00";
+                    $model->etime = $post["etime"].":00";
+                    $model->note = $post["note"];
+                    $model->status = "confirmed";
+                    $model->created_at = date("Y-m-d H:i:s");
+                    $model->save();
 
-                return response()->json(['status' => 200,'message' => "Appointment booked successfully."]);
+                    return response()->json(['status' => 200,'message' => "Appointment booked successfully."]);
+                } else {
+                    return response()->json(['status' => 400,'message' => "You can't book appointment in past."]); 
+                }
             } else {
                 return response()->json(['status' => 400,'message' => "You already booked appointment with same date & slot with other professional."]);
             }
@@ -74,10 +79,10 @@ class CommonController extends Controller
     {
         $post = $request->all();
 
-        $model = Appointment::find($post['appointment_id']);
-        $model->status = $post['status'];
-        $model->save();
-
-        return response()->json(['status' => 200,'message' => $post["status"] == "cancelled" ? "Appointment cancelled successfully." : "Appointment completed successfully."]);
+        $appointment = Appointment::find($post['appointment_id']);
+        $appointment->status = $post['status'];
+        $appointment->save();
+        
+        return response()->json(['status' => 200,'message' => $post["status"] == "completed" ? "Appointment completed successfully." : "Appointment cancelled successfully."]);
     }
 }
